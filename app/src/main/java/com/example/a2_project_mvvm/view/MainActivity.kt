@@ -11,32 +11,49 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.a2_project_mvvm.R
 import com.example.a2_project_mvvm.model.Article
 import com.example.a2_project_mvvm.view.adapters.ArticleAdapter
+import com.example.a2_project_mvvm.view_model.ArticlesViewModel
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var articleAdapter: ArticleAdapter
     lateinit var textField: EditText
-    var articles:MutableList<Article> = mutableListOf(Article("tesd"))
-    lateinit var recyclerView: RecyclerView
+
+    lateinit var recyclerView: RecyclerView // this replace the line below MVVM
+    //var articles:MutableList<Article> = mutableListOf(Article("tesd"))
+
+
+    val viewModel = ArticlesViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        articleAdapter = ArticleAdapter(articles = articles, onDelete = {delete(it)})
+        // - here we replaced articles by viewModel
+        //1. //1. articleAdapter = ArticleAdapter(articles = viewModel.articles.value, onDelete = {delete(it)})
+        //* 2.
+
         recyclerView = findViewById(R.id.recycler)
+        createOrUpdateAdapter()
         textField = findViewById(R.id.addTF)
-        recyclerView.adapter = articleAdapter
+        //recyclerView.adapter = articleAdapter
         val addButton: Button = findViewById(R.id.addButton)
 
         addButton.setOnClickListener {add()}
-
     }
+
+    fun createOrUpdateAdapter() {
+        if(viewModel.articles.value == null) return
+
+        articleAdapter = ArticleAdapter(articles = viewModel.articles.value!!, onDelete = {})
+        recyclerView.adapter = articleAdapter
+        recyclerView.adapter?.notifyDataSetChanged()
+    }
+
 
     fun add() {
         closeKeyboard()
         if(textField.text.isEmpty()) return
         val newArticle = Article(textField.text.toString())
-        articles.add(newArticle)
+       // articles.add(newArticle)
         textField.setText("")
 
         recyclerView.adapter?.notifyDataSetChanged()
@@ -44,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun delete(article: Article) {
-        articles.remove(article)
+      //  articles.remove(article)
         recyclerView.adapter?.notifyDataSetChanged()
     }
 
