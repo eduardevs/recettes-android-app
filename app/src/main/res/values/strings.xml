@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">2-project-MVVM</string>
+    <string name="placeholder">Entrez un article</string>
+</resources>
